@@ -23,3 +23,9 @@ input {
 button {
   cursor: pointer;
 }
+
+@layer components {
+  .form-input {
+    @apply mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100;
+  }
+}

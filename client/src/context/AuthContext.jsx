@@ -29,6 +29,7 @@ export function AuthProvider({ children }) {
           setUser(null)
           setAccessToken(null)
           setAccessTokenState(null)
+          setLoading(false)
         }
       })
       .finally(() => {

@@ -38,9 +38,11 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config
-    const isRefreshRequest = originalRequest?.url?.endsWith('/auth/refresh-token')
+    const requestUrl = originalRequest?.url || ''
+    const isAuthRequest = ['/auth/me', '/auth/login', '/auth/refresh-token']
+      .some((path) => requestUrl.endsWith(path))
 
-    if (error.response?.status !== 401 || originalRequest?._retry || isRefreshRequest) {
+    if (error.response?.status !== 401 || originalRequest?._retry || isAuthRequest) {
       return Promise.reject(error)
     }
 
@@ -68,7 +70,9 @@ api.interceptors.response.use(
     } catch (refreshError) {
       setAccessToken(null)
       clearAuthState()
-      window.location.assign('/login')
+      if (window.location.pathname !== '/login') {
+        window.location.assign('/login')
+      }
       return Promise.reject(refreshError)
     }
   },

@@ -3,6 +3,10 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import MainLayout from './components/layout/MainLayout'
 import LoginPage from './pages/LoginPage'
+import DashboardPage from './pages/DashboardPage'
+import OrdersPage from './pages/OrdersPage'
+import CreateOrderPage from './pages/CreateOrderPage'
+import OrderDetailPage from './pages/OrderDetailPage'
 
 function HomeRedirect() {
   const { user } = useAuth()
@@ -35,20 +39,14 @@ function AppRoutes() {
             <Route
               index
               element={
-                <PageHeading
-                  title="Bảng điều khiển"
-                  description="Theo dõi tình hình điều phối và tiến độ phiếu việc."
-                />
+                <DashboardPage />
               }
             />
           </Route>
           <Route
             path="/orders"
             element={
-              <PageHeading
-                title="Danh sách phiếu việc"
-                description="Quản lý và theo dõi các phiếu việc được phân công."
-              />
+              <OrdersPage />
             }
           />
           <Route
@@ -60,20 +58,14 @@ function AppRoutes() {
             <Route
               index
               element={
-                <PageHeading
-                  title="Tạo phiếu mới"
-                  description="Tạo phiếu việc mới cho khách hàng."
-                />
+                <CreateOrderPage />
               }
             />
           </Route>
           <Route
             path="/orders/:id"
             element={
-              <PageHeading
-                title="Chi tiết phiếu việc"
-                description="Xem thông tin và cập nhật tiến độ phiếu việc."
-              />
+              <OrderDetailPage />
             }
           />
           <Route
