@@ -41,6 +41,7 @@ async function getOrders(req, res, next) {
       filter.$or = [
         { 'customer.name': searchRegex },
         { 'customer.phone': searchRegex },
+        { orderCode: searchRegex },
       ];
     }
     if (req.user.role === 'technician') {

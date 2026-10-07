@@ -11,9 +11,29 @@ const statuses = [
 
 async function getSummaryStats(req, res, next) {
   try {
-    const groupedStatuses = await WorkOrder.aggregate([
-      { $group: { _id: '$status', count: { $sum: 1 } } },
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(startOfDay);
+    endOfDay.setDate(endOfDay.getDate() + 1);
+    const [summary] = await WorkOrder.aggregate([
+      {
+        $facet: {
+          groupedStatuses: [
+            { $group: { _id: '$status', count: { $sum: 1 } } },
+          ],
+          processingToday: [
+            {
+              $match: {
+                scheduledDate: { $gte: startOfDay, $lt: endOfDay },
+                status: { $in: ['assigned', 'in_progress'] },
+              },
+            },
+            { $count: 'count' },
+          ],
+        },
+      },
     ]);
+    const groupedStatuses = summary.groupedStatuses;
     const statusCounts = statuses.reduce((counts, status) => {
       const result = groupedStatuses.find((item) => item._id === status);
       counts[status] = result ? result.count : 0;
@@ -26,6 +46,7 @@ async function getSummaryStats(req, res, next) {
       stats: {
         totalOrders,
         byStatus: statusCounts,
+        processingToday: summary.processingToday[0]?.count || 0,
         completionRate: totalOrders
           ? Number(((statusCounts.completed / totalOrders) * 100).toFixed(2))
           : 0,
@@ -58,6 +79,7 @@ async function getTechnicianPerformance(req, res, next) {
             username: '$technician.username',
             fullName: '$technician.fullName',
             phone: '$technician.phone',
+            isActive: '$technician.isActive',
           },
           completedOrders: 1,
         },
