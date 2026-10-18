@@ -1,0 +1,26 @@
+services:
+  # Dịch vụ 1: Backend API
+  server:
+    build: ./server
+    container_name: hoang-hieu-backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./server/.env
+    environment:
+      # Cho phép cả cổng dev (5173) và cổng Docker (8080) gọi API không bị lỗi CORS
+      - CLIENT_URL=http://localhost:5173,http://localhost:8080
+
+  # Dịch vụ 2: Giao diện Frontend React + Nginx
+  client:
+    build:
+      context: ./client
+      args:
+        - VITE_API_URL=http://localhost:5000/api
+    container_name: hoang-hieu-frontend
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      - server

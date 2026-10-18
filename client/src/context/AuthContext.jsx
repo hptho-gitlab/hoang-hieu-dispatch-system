@@ -59,8 +59,13 @@ export function AuthProvider({ children }) {
     }
   }
 
+  async function changePassword(credentials) {
+    const { data } = await api.patch('/auth/change-password', credentials)
+    return data
+  }
+
   const value = useMemo(
-    () => ({ user, accessToken, login, logout, loading }),
+    () => ({ user, accessToken, login, logout, changePassword, loading }),
     [user, accessToken, loading],
   )
 

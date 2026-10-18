@@ -7,6 +7,7 @@ import DashboardPage from './pages/DashboardPage'
 import OrdersPage from './pages/OrdersPage'
 import CreateOrderPage from './pages/CreateOrderPage'
 import OrderDetailPage from './pages/OrderDetailPage'
+import UsersPage from './pages/UsersPage'
 
 function HomeRedirect() {
   const { user } = useAuth()
@@ -83,6 +84,9 @@ function AppRoutes() {
                 />
               }
             />
+          </Route>
+          <Route path="/users" element={<ProtectedRoute allowedRoles={['admin']} />}>
+            <Route index element={<UsersPage />} />
           </Route>
         </Route>
       </Route>

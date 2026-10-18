@@ -26,7 +26,7 @@ export default function MainLayout() {
         <main className="flex-1 p-4 pb-24 sm:p-6 lg:p-8 lg:pb-8">
           <Outlet />
         </main>
-        <nav className="fixed inset-x-0 bottom-0 z-10 flex justify-around border-t border-slate-200 bg-white px-2 py-2 lg:hidden">
+        <nav className="fixed inset-x-0 bottom-0 z-10 flex justify-around border-t border-slate-200 bg-white px-2 py-2 lg:hidden print:hidden">
           {mobileLinks.map(({ to, label, icon: Icon }) => (
             <NavLink
               key={to}

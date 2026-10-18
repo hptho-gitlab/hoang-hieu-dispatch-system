@@ -5,7 +5,7 @@ export default function Navbar({ onMenuClick }) {
   const { user } = useAuth()
 
   return (
-    <header className="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-4 sm:px-6">
+    <header className="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-4 sm:px-6 print:hidden">
       <button
         type="button"
         onClick={onMenuClick}

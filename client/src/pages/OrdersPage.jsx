@@ -1,14 +1,19 @@
 import { useEffect, useState } from 'react'
-import { Plus, Search } from 'lucide-react'
+import { Download, Plus, Search } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import api from '../api/axiosClient'
 import { useAuth } from '../context/AuthContext'
+import { exportOrdersToExcel } from '../utils/exportExcel'
 import {
   formatDate,
   orderTypeLabels,
   statusClasses,
   statusLabels,
 } from '../utils/orderLabels'
+
+function formatCurrency(value) {
+  return new Intl.NumberFormat('vi-VN').format(Number(value) || 0)
+}
 
 const statusFilters = [
   ['all', 'Tất cả'],
@@ -57,12 +62,21 @@ export default function OrdersPage() {
           <p className="mt-1 text-sm text-slate-500">Theo dõi toàn bộ công việc điều phối.</p>
         </div>
         {user?.role === 'admin' && (
-          <Link
-            to="/orders/create"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-cyan-600 px-4 py-3 text-sm font-semibold text-white hover:bg-cyan-700"
-          >
-            <Plus size={18} /> Tạo phiếu mới
-          </Link>
+          <div className="print:hidden flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => exportOrdersToExcel(orders)}
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-white px-4 py-3 text-sm font-semibold text-emerald-700 hover:bg-emerald-50"
+            >
+              <Download size={18} /> 📥 Xuất Excel đối soát
+            </button>
+            <Link
+              to="/orders/create"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-cyan-600 px-4 py-3 text-sm font-semibold text-white hover:bg-cyan-700"
+            >
+              <Plus size={18} /> Tạo phiếu mới
+            </Link>
+          </div>
         )}
       </div>
       <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4">
@@ -129,6 +143,34 @@ export default function OrdersPage() {
                 <p><span className="text-slate-400">Số điện thoại:</span> {order.customer?.phone}</p>
                 <p><span className="text-slate-400">Lịch dự kiến:</span> {formatDate(order.scheduledDate)}</p>
                 <p><span className="text-slate-400">Dịch vụ:</span> {orderTypeLabels[order.orderType]}</p>
+                <div className="flex items-start gap-1 sm:col-span-2 lg:col-span-4">
+                  <span className="text-slate-400">Địa chỉ:</span>
+                  <span className="min-w-0">{order.customer?.address}</span>
+                  {order.customer?.address && (
+                    <a
+                      href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(order.customer.address)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(event) => event.stopPropagation()}
+                      className="ml-1 shrink-0 text-xs font-semibold text-cyan-700 hover:text-cyan-900"
+                    >
+                      📍 Chỉ đường
+                    </a>
+                  )}
+                </div>
+              </div>
+              <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3">
+                <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">
+                  {order.deviceCategory === 'network' ? 'Mạng - Wi-Fi' : 'Camera'}
+                </span>
+                {order.issueDetails?.map((issue) => (
+                  <span key={issue} className="rounded-full bg-violet-50 px-2.5 py-1 text-xs text-violet-700">
+                    {issue}
+                  </span>
+                ))}
+                <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${order.isUnderWarranty ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
+                  {order.isUnderWarranty ? 'Trong hạn BH - Miễn phí' : `Ngoài BH: ${formatCurrency(order.serviceFee)} ₫`}
+                </span>
               </div>
               <div className="mt-4 flex justify-end">
                 <Link to={`/orders/${order._id}`} className="text-sm font-semibold text-cyan-700 hover:text-cyan-900">
