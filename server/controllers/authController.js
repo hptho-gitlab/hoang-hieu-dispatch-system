@@ -128,11 +128,40 @@ async function refreshToken(req, res, next) {
 function logout(req, res) {
   res.clearCookie('refreshToken', {
     httpOnly: true,
-    secure: true,
-    sameSite: 'none',
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     path: '/',
   });
   return res.status(200).json({ success: true, message: 'Đăng xuất thành công' });
+}
+
+async function changePassword(req, res, next) {
+  try {
+    const { currentPassword, newPassword } = req.body || {};
+    if (typeof currentPassword !== 'string' || typeof newPassword !== 'string') {
+      return validationError(res, 'Vui lòng nhập đầy đủ mật khẩu hiện tại và mật khẩu mới');
+    }
+    if (newPassword.length < 6) {
+      return validationError(res, 'Mật khẩu mới phải có ít nhất 6 ký tự');
+    }
+
+    const user = await User.findById(req.user.id);
+    if (!user || !(await user.comparePassword(currentPassword))) {
+      return res.status(401).json({
+        success: false,
+        message: 'Mật khẩu hiện tại không đúng',
+      });
+    }
+
+    user.password = newPassword;
+    await user.save();
+    return res.status(200).json({
+      success: true,
+      message: 'Đổi mật khẩu thành công',
+    });
+  } catch (error) {
+    return next(error);
+  }
 }
 
 async function getMe(req, res, next) {
@@ -160,4 +189,5 @@ module.exports = {
   refreshToken,
   logout,
   getMe,
+  changePassword,
 };

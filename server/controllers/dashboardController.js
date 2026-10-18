@@ -30,6 +30,22 @@ async function getSummaryStats(req, res, next) {
             },
             { $count: 'count' },
           ],
+          revenue: [
+            { $match: { status: 'completed' } },
+            { $group: { _id: null, total: { $sum: '$serviceFee' } } },
+          ],
+          warrantyCounts: [
+            {
+              $group: {
+                _id: '$isUnderWarranty',
+                count: { $sum: 1 },
+              },
+            },
+          ],
+          categoryBreakdown: [
+            { $match: { deviceCategory: { $in: ['camera', 'network'] } } },
+            { $group: { _id: '$deviceCategory', count: { $sum: 1 } } },
+          ],
         },
       },
     ]);
@@ -40,11 +56,23 @@ async function getSummaryStats(req, res, next) {
       return counts;
     }, {});
     const totalOrders = Object.values(statusCounts).reduce((total, count) => total + count, 0);
+    const warrantyCounts = summary.warrantyCounts.reduce((counts, item) => {
+      counts[item._id ? 'warranty' : 'outOfWarranty'] = item.count;
+      return counts;
+    }, { warranty: 0, outOfWarranty: 0 });
+    const categoryBreakdown = summary.categoryBreakdown.reduce((counts, item) => {
+      counts[item._id] = item.count;
+      return counts;
+    }, { camera: 0, network: 0 });
 
     return res.status(200).json({
       success: true,
       stats: {
         totalOrders,
+        totalRevenue: summary.revenue[0]?.total || 0,
+        warrantyOrdersCount: warrantyCounts.warranty,
+        outOfWarrantyOrdersCount: warrantyCounts.outOfWarranty,
+        categoryBreakdown,
         byStatus: statusCounts,
         processingToday: summary.processingToday[0]?.count || 0,
         completionRate: totalOrders

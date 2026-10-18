@@ -18,6 +18,39 @@ const workOrderSchema = new mongoose.Schema(
       enum: ['installation', 'maintenance', 'warranty'],
       required: true,
     },
+    deviceCategory: {
+      type: String,
+      enum: ['camera', 'network', 'general'],
+      default: 'camera',
+    },
+    issueDetails: {
+      type: [String],
+      default: [],
+    },
+    isUnderWarranty: {
+      type: Boolean,
+      default: false,
+    },
+    warrantyEndDate: {
+      type: Date,
+      default: null,
+    },
+    serviceFee: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    materialsUsed: {
+      type: [
+        {
+          name: { type: String, trim: true },
+          quantity: { type: Number, default: 1, min: 0 },
+          unit: { type: String, default: 'Cái', trim: true },
+          unitPrice: { type: Number, default: 0, min: 0 },
+        },
+      ],
+      default: [],
+    },
     customer: {
       name: {
         type: String,
@@ -55,6 +88,30 @@ const workOrderSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    timeline: [
+      {
+        action: {
+          type: String,
+          required: true,
+        },
+        title: {
+          type: String,
+          required: true,
+        },
+        note: {
+          type: String,
+          default: '',
+        },
+        performedBy: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -64,6 +121,10 @@ const workOrderSchema = new mongoose.Schema(
 );
 
 workOrderSchema.pre('save', async function generateOrderCode(next) {
+  if (this.isUnderWarranty) {
+    this.serviceFee = 0;
+  }
+
   if (this.orderCode) {
     return next();
   }

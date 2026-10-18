@@ -2,6 +2,7 @@ const express = require('express');
 const {
   getOrders,
   getOrderById,
+  getCustomerHistory,
   createOrder,
   assignTechnician,
   updateStatus,
@@ -14,6 +15,7 @@ const router = express.Router();
 
 router.use(verifyToken);
 router.get('/', getOrders);
+router.get('/customer-history', getCustomerHistory);
 router.post('/', requireRole('admin'), createOrder);
 router.get('/:id', getOrderById);
 router.patch('/:id/assign', requireRole('admin'), assignTechnician);
