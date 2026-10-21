@@ -7,21 +7,12 @@ import DashboardPage from './pages/DashboardPage'
 import OrdersPage from './pages/OrdersPage'
 import CreateOrderPage from './pages/CreateOrderPage'
 import OrderDetailPage from './pages/OrderDetailPage'
+import ReportsPage from './pages/ReportsPage'
 import UsersPage from './pages/UsersPage'
 
 function HomeRedirect() {
   const { user } = useAuth()
   return <Navigate to={user?.role === 'admin' ? '/dashboard' : '/orders'} replace />
-}
-
-function PageHeading({ title, description }) {
-  return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6">
-      <p className="text-sm font-semibold text-cyan-600">HOÀNG HIẾU TELECOM</p>
-      <h1 className="mt-2 text-2xl font-bold text-slate-900">{title}</h1>
-      <p className="mt-2 text-sm text-slate-500">{description}</p>
-    </div>
-  )
 }
 
 function AppRoutes() {
@@ -77,12 +68,7 @@ function AppRoutes() {
           >
             <Route
               index
-              element={
-                <PageHeading
-                  title="Báo cáo & Thống kê"
-                  description="Phân tích hiệu suất xử lý phiếu việc."
-                />
-              }
+              element={<ReportsPage />}
             />
           </Route>
           <Route path="/users" element={<ProtectedRoute allowedRoles={['admin']} />}>
