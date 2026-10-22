@@ -22,6 +22,12 @@ export const orderTypeLabels = {
   warranty: 'Bảo hành',
 }
 
+export const serviceLabels = {
+  installation: 'Lắp đặt mới',
+  maintenance: 'Bảo trì / Sửa chữa',
+  warranty: 'Bảo hành',
+}
+
 export function formatDate(value) {
   if (!value) return 'Chưa cập nhật'
   return new Intl.DateTimeFormat('vi-VN', {
