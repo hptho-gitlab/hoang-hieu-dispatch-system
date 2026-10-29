@@ -31,9 +31,12 @@ Hệ thống hỗ trợ chuyển đổi số toàn diện quy trình tiếp nh�
 - **Nghiệm thu kèm hình ảnh Cloudinary:** Upload biên bản nghiệm thu và ảnh hiện trường thực tế lên Cloudinary CDN.
 - **In phiếu bảo trì / Biên bản nghiệm thu (Khổ A4):** Template in chuyên nghiệp, tự động ẩn thanh công cụ/thực đơn khi in (`print:hidden`), có đầy đủ chữ ký 2 bên.
 
-### 4. Báo cáo quản trị & Kế toán đối soát
-- **Dashboard thời gian thực:** Thống kê tỷ lệ hoàn thành, tổng doanh thu dịch vụ, phân bổ thiết bị (Camera vs Mạng), và bảng hiệu suất nghiệm thu từng kỹ thuật viên.
-- **Xuất dữ liệu Excel (.xlsx):** Xuất sổ theo dõi đối soát doanh thu chi tiết kèm công thức tính tổng bằng SheetJS.
+### 4. Phân tích Dữ liệu, Đánh giá KPI & Đối soát Tài chính
+- **Dashboard Giám sát (Real-time Snapshot):** Theo dõi tức thời luồng trạng thái phiếu việc trong ngày, tổng số công việc và doanh thu dịch vụ.
+- **Phân tích Xu hướng & Đề xuất vận hành (Rule-based Analytics):** Tự động phân tích dữ liệu lịch sử phiếu việc để xác định nhóm thiết bị hỏng nhiều nhất, thống kê top sự cố kỹ thuật chi tiết (mất nguồn, mờ/nhiễu, đứt cáp...) và đưa ra khuyến nghị tồn kho vật tư hoặc cảnh báo tỷ lệ bảo hành vượt ngưỡng.
+- **Đánh giá Hiệu suất Kỹ thuật viên (KPI):** Bảng xếp hạng KPI nhân sự chi tiết (số phiếu giao, đang xử lý, đã nghiệm thu, phân bổ đơn BH/thu phí, tổng doanh thu mang về, tỷ lệ hoàn thành kèm thanh tiến độ và xếp loại tự động).
+- **Sổ cái & Đối soát Doanh thu:** Bộ lọc đa chiều tương tác theo thời gian (tùy chỉnh ngày), loại thiết bị và chế độ bảo hành. Bảng sổ cái đối soát phiếu việc chi tiết có dòng tổng cộng doanh thu và hỗ trợ in ấn mẫu A4 chuyên nghiệp.
+- **Xuất báo cáo Excel (.xlsx):** Tích hợp thư viện SheetJS xuất báo cáo đối soát đa trang tính tự động tính toán số liệu kế toán.
 
 ### 5. Kiến trúc Bảo mật (OWASP Standards)
 - **Xác thực phiên làm việc kép:** Access Token ngắn hạn kết hợp Refresh Token lưu trong `HttpOnly`, `SameSite`, `Secure` Cookie.
@@ -50,9 +53,9 @@ Hệ thống hỗ trợ chuyển đổi số toàn diện quy trình tiếp nh�
 | **Frontend** | React 18, Vite, Tailwind CSS, Lucide React, Axios, SheetJS (`xlsx`) |
 | **Backend** | Node.js, Express.js (RESTful Architecture) |
 | **Database** | MongoDB Atlas, Mongoose ODM |
-| **Storage & Cloud** | Cloudinary API (Lưu trữ ảnh hiện trường) |
-| **DevOps & Container** | Docker, Docker Compose, Nginx Alpine Multi-stage Build |
-| **Bảo mật** | JSON Web Token (JWT), Bcrypt, Helmet, Express Rate Limit |
+| **Storage & Cloud CDN** | Cloudinary API (Lưu trữ ảnh nghiệm thu thực tế) |
+| **DevOps & Triển khai** | Docker, Docker Compose, Nginx Multi-stage / **Vercel** (Frontend) / **Render** (Backend) |
+| **Bảo mật (OWASP)** | Dual-Token JWT (HttpOnly Cookie), Bcrypt, Helmet, Express Rate Limit, NoSQL Injection Filter, CORS Whitelist |
 
 ---
 
@@ -64,7 +67,7 @@ hoang-hieu-dispatch-system/
 │   ├── src/
 │   │   ├── api/                # Cấu hình Axios Client
 │   │   ├── components/         # Modal đổi mật khẩu, Navbar, Sidebar...
-│   │   ├── pages/              # Dashboard, Orders, CreateOrder, OrderDetail, Users
+│   │   ├── pages/              # DashboardPage, OrdersPage, CreateOrderPage, OrderDetailPage, UsersPage, ReportsPage.jsx
 │   │   └── utils/              # Xuất Excel, định dạng tiền tệ VNĐ, ngày tháng
 │   ├── nginx.conf              # Cấu hình máy chủ Nginx (SPA Routing)
 │   ├── Dockerfile              # Dockerfile Multi-stage (Node Build -> Nginx Run)
