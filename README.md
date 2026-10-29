@@ -38,15 +38,17 @@ Hệ thống hỗ trợ chuyển đổi số toàn diện quy trình tiếp nh�
 - **Sổ cái & Đối soát Doanh thu:** Bộ lọc đa chiều tương tác theo thời gian (tùy chỉnh ngày), loại thiết bị và chế độ bảo hành. Bảng sổ cái đối soát phiếu việc chi tiết có dòng tổng cộng doanh thu và hỗ trợ in ấn mẫu A4 chuyên nghiệp.
 - **Xuất báo cáo Excel (.xlsx):** Tích hợp thư viện SheetJS xuất báo cáo đối soát đa trang tính tự động tính toán số liệu kế toán.
 
-### 5. Kiến trúc Bảo mật (OWASP Standards)
-- **Xác thực phiên làm việc kép:** Access Token ngắn hạn kết hợp Refresh Token lưu trong `HttpOnly`, `SameSite`, `Secure` Cookie.
-- **Chống dò mật khẩu (Brute-Force Attack):** `express-rate-limit` chặn đăng nhập sau 5 lần thử sai từ cùng một địa chỉ IP.
-- **Chống NoSQL Injection:** Middleware loại bỏ toàn bộ toán tử query nhạy cảm (`$`, `.`) trước khi đẩy vào database.
-- **HTTP Header Security:** `helmet` bảo vệ ứng dụng, ẩn thông tin server, chống clickjacking và kiểm soát tài nguyên chéo (CORP).
+### 5. Kiến trúc Bảo mật Đa lớp (OWASP Standards)
+- **Kiểm soát truy cập & Phân quyền (RBAC - Broken Access Control Prevention):** Phân định chặt chẽ quyền hạn giữa Điều phối viên và Kỹ thuật viên; middleware kiểm tra trạng thái kích hoạt tài khoản (`isActive`) thời gian thực và bảo vệ quyền sở hữu phiếu việc.
+- **Xác thực phiên kép an toàn (Dual-Token JWT):** Access Token ngắn hạn kết hợp Refresh Token lưu trong `HttpOnly`, `SameSite`, `Secure` Cookie chống đánh cắp phiên qua tấn công XSS.
+- **Chống dò quét mật khẩu (Brute-Force Protection):** Tích hợp `express-rate-limit` chặn request sau 5 lần thử đăng nhập sai liên tiếp từ cùng một địa chỉ IP.
+- **Lọc dữ liệu chống NoSQL Injection:** Middleware tự động kiểm tra và loại bỏ các toán tử truy vấn nhạy cảm (`$`, `.`) trong body, params và query trước khi xử lý tại cơ sở dữ liệu.
+- **Bảo mật HTTP Headers (Helmet):** Ẩn chữ ký máy chủ (`X-Powered-By`), chống Clickjacking, bảo vệ MIME-type sniffing và kiểm soát tài nguyên chéo (CORP).
+- **Kiểm soát nguồn gốc tên miền (CORS Whitelist):** Giới hạn chỉ chấp nhận các yêu cầu hợp lệ xuất phát từ domain client được chỉ định trên môi trường sản xuất.
 
 ---
 
-## Công nghệ sử dụng (Tech Stack)
+## Công nghệ sử dụng
 
 | Lớp kiến trúc | Công nghệ |
 | :--- | :--- |
