@@ -10,6 +10,22 @@ Hệ thống hỗ trợ chuyển đổi số toàn diện quy trình tiếp nh�
 
 ---
 
+## Trải nghiệm trực tuyến & Tài khoản Demo
+
+- **Ứng dụng Web trực tuyến:** https://hoang-hieu-dispatch-system.vercel.app
+- **Máy chủ Backend API:** https://hoang-hieu-api.onrender.com
+
+Hệ thống đã thiết lập sẵn 2 tài khoản mẫu đại diện cho 2 vai trò nghiệp vụ (RBAC) để hội đồng nghiệm thu và trải nghiệm tính năng:
+
+| Vai trò | Tên đăng nhập | Mật khẩu | Phạm vi quyền hạn trải nghiệm |
+| :--- | :--- | :--- | :--- |
+| **Điều phối viên (Admin)** | admin | Admin@123 | Toàn quyền quản trị: Giám sát Dashboard, tạo & phân công phiếu việc, khóa/mở tài khoản nhân sự, xem Báo cáo phân tích xu hướng và xuất sổ đối soát Excel (.xlsx). |
+| **Kỹ thuật viên (Technician)** | tech_nam | Tech@123 | Giao diện tối ưu Mobile: Xem danh sách phiếu được phân công, mở Google Maps chỉ đường, gọi điện cho khách, cập nhật tiến độ và tải ảnh nghiệm thu thực địa. |
+
+> **Lưu ý:** Để trải nghiệm giao diện Kỹ thuật viên trực quan nhất, khuyến khích mở trên trình duyệt điện thoại di động hoặc bật chế độ Device Toolbar (F12) trên trình duyệt máy tính.
+
+---
+
 ## Tính năng nổi bật
 
 ### 1. Quản lý & Phân quyền người dùng (RBAC)
